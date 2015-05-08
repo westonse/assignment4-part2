@@ -17,6 +17,7 @@ else{
 	echo "Connection worked! <br>";
 	
 }
+
 if (!($stmt = $mysqli->prepare("SELECT name, category, length, rented FROM videos"))) {
     echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
 }
@@ -44,23 +45,58 @@ echo '<td>' . 'Name';
 echo '<td>' . 'Category';
 echo '<td>' . 'Length';
 echo '<td>' . 'Checked in/out';
-
+$catArray = [];
 while ($stmt->fetch()) {
-    //printf("id = %s (%s), name = %s (%s) category = %s (%s)\n", $out_id, gettype($out_id), $out_name, gettype($out_name), $out_category, gettype($out_category));
+	if(isset($_POST['filter'])){
+		if($out_category == $_POST['filter'] || $_POST['filter'] == 'all' ){
+			echo '<tr><td>' . "<form action = 'http://web.engr.oregonstate.edu/~westonse/Assignment4-2src/videoStore.php' id = '$out_name' method = 'post'> <button type='submit' name = 'Delete' value = '$out_name'>Delete</button> </form>";
+			echo '<td>' . $out_name;
+			echo '<td>' . $out_category;
+			echo '<td>' . $out_length;
+			if($out_rented == 0){
+				$rented = 'Checked in';
+			}
+			if($out_rented == 1){
+				$rented = 'Checked out';
+			}
+			echo '<td>' . "<form action = 'http://web.engr.oregonstate.edu/~westonse/Assignment4-2src/videoStore.php' id = '$out_name'.'check' method = 'post'> <button type='submit' name = 'check' value = '$out_name'>'$rented'</button> </form>";
+			
+		}
+	}
+	else{
 	echo '<tr><td>' . "<form action = 'http://web.engr.oregonstate.edu/~westonse/Assignment4-2src/videoStore.php' id = '$out_name' method = 'post'> <button type='submit' name = 'Delete' value = '$out_name'>Delete</button> </form>";
 	echo '<td>' . $out_name;
 	echo '<td>' . $out_category;
 	echo '<td>' . $out_length;
-	if($out_rented == 0){
+
+		if($out_rented == 0){
 		$rented = 'Checked in';
-	}
-	if($out_rented == 1){
+		}
+		if($out_rented == 1){
 		$rented = 'Checked out';
+		}
+		echo '<td>' . "<form action = 'http://web.engr.oregonstate.edu/~westonse/Assignment4-2src/videoStore.php' id = '$out_name'.'check' method = 'post'> <button type='submit' name = 'check' value = '$out_name'>'$rented'</button> </form>";
 	}
-	echo '<td>' . "<form action = 'http://web.engr.oregonstate.edu/~westonse/Assignment4-2src/videoStore.php' id = '$out_name'.'check' method = 'post'> <button type='submit' name = 'check' value = '$out_name'>'$rented'</button> </form>";
+	if(!in_array($out_category,$catArray) && $out_category!=""){
+		array_push($catArray,$out_category);
+	}
 }
 	echo '<tr><td>' . "<form action = 'http://web.engr.oregonstate.edu/~westonse/Assignment4-2src/videoStore.php' method = 'post'> <button type='submit' name = 'DeleteAll'>Delete All</button> </form>";
 echo '</table>';
+echo '<p><h4>Category Menu (Click buttons to filter videos by category)</h4>
+<p>
+<table border="1">';
+ echo '<tr><td>' . "<form action = 'http://web.engr.oregonstate.edu/~westonse/Assignment4-2src/videoStore.php' method = 'post'> <button type='submit' name = 'filter' value = 'all'>'All Categories'</button> </form>";
+foreach($catArray as $value){
+ echo '<tr><td>' . "<form action = 'http://web.engr.oregonstate.edu/~westonse/Assignment4-2src/videoStore.php' method = 'post'> <button type='submit' name = 'filter' value = '$value'>'$value'</button> </form>";
+}
+echo '</table>';
+echo " <br> <br> <form action = 'http://web.engr.oregonstate.edu/~westonse/Assignment4-2src/videoStore.php' id = 'addMovie' method = 'post'>"; 
+echo "<input type = 'text' name = 'newName'> Name <br>";
+echo "<input type = 'text' name = 'newCategory'> Category <br>";
+echo "<input type='number' name='newLength' min='0'> Length (Mins) <br>";
+echo "<button type='submit'> Add New </button> </form>";
+
 $stmt->close();
 if(isset($_POST['Delete'])){
 $deleteVid = $_POST['Delete'];
@@ -91,6 +127,69 @@ if (!$deleteAll->execute()) {
     echo "Execute failed: (" . $mysqli->errno . ") " . $mysqli->error;
 }
 echo '<meta http-equiv="refresh" content="0,URL=http://web.engr.oregonstate.edu/~westonse/Assignment4-2src/videoStore.php" />';
+}
+
+if(isset($_POST['newName']) || isset($_POST['newCategory']) || isset($_POST['newLength'])){
+	
+	if($_POST['newName']!=null && is_numeric($_POST['newLength'])){
+		$newLength = null;
+		$newName = $_POST['newName'];
+		if(!isset($_POST['newCategory'])){
+			$newCategory = "";
+		}
+		else{
+			$newCategory = $_POST['newCategory'];
+		}
+		if(!isset($_POST['newLength'])){
+			$newLength = 0;
+		}
+		else{
+			$newLength = $_POST['newLength'];
+		}
+			$newRented = 0;
+			echo 'Add Successful';
+			if (!($addNew = $mysqli->prepare("INSERT INTO videos (name, category, length, rented) VALUES ('$newName', '$newCategory', '$newLength', '$newRented')"))) {
+				echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
+			}
+			if (!$addNew->execute()) {
+				echo "Execute failed: (" . $mysqli->errno . ") " . $mysqli->error;
+		
+			}
+			echo '<meta http-equiv="refresh" content="0,URL=http://web.engr.oregonstate.edu/~westonse/Assignment4-2src/videoStore.php" />';
+		
+	}
+	else if($_POST['newName']!=null && $_POST['newLength']==null){
+		$newLength = null;
+		$newName = $_POST['newName'];
+		if(!isset($_POST['newCategory'])){
+			$newCategory = "";
+		}
+		else{
+			$newCategory = $_POST['newCategory'];
+		}
+			$newLength = 0;
+		
+
+			$newRented = 0;
+			echo 'Add Successful';
+			if (!($addNew = $mysqli->prepare("INSERT INTO videos (name, category, length, rented) VALUES ('$newName', '$newCategory', '$newLength', '$newRented')"))) {
+				echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
+			}
+			if (!$addNew->execute()) {
+				echo "Execute failed: (" . $mysqli->errno . ") " . $mysqli->error;
+		
+			}
+			echo '<meta http-equiv="refresh" content="0,URL=http://web.engr.oregonstate.edu/~westonse/Assignment4-2src/videoStore.php" />';
+		
+	}
+	else if($_POST['newName']==null){
+		echo 'Name is required please try again';
+	}
+	
+	else{
+		echo 'Length must be numerical, please try again';
+	}
+	
 }
 
 echo '</body>
