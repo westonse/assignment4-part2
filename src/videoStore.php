@@ -13,11 +13,6 @@ if($mysqli->connect_errno){
 	echo "Failed to connect to mySQL: (" . $mysqli->connect_errno . ")" . $mysqli->connect_error;
 
 }
-else{
-	echo "Connection worked! <br>";
-	
-}
-
 if (!($stmt = $mysqli->prepare("SELECT name, category, length, rented FROM videos"))) {
     echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
 }

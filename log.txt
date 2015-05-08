@@ -1,0 +1,11 @@
+Start: Th, 7 May 2015 19:18:00 -0700
+End: Th, 7 May 2015 23:41:24 -0700
+Tasks: Implemented check in buttons, add form, and category filtering, finished.
+
+Start: Wed, 6 May 2015 19:05:00 -0700
+End: Wed, 6 May 2015 23:48:35 -0700
+Tasks: Implemented data retrieval and deletion
+
+Start: Tue, 5 May 2015 18:18:08 -0700
+End: Tue, 5 May 2015 18:27:08 -0700
+Tasks: Initial commit of working files
