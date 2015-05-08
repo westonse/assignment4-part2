@@ -1,3 +1,7 @@
+Start: Fri, 8 May 2015 14:00:00 -0700
+End: Fri, 8 May 2015 15:32:19 -0700
+Tasks: Fixed filter table to filter dropdown to meet interface requirements.
+
 Start: Th, 7 May 2015 19:18:00 -0700
 End: Th, 7 May 2015 23:41:24 -0700
 Tasks: Implemented check in buttons, add form, and category filtering, finished.
