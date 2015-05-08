@@ -13,6 +13,7 @@ if($mysqli->connect_errno){
 	echo "Failed to connect to mySQL: (" . $mysqli->connect_errno . ")" . $mysqli->connect_error;
 
 }
+
 if (!($stmt = $mysqli->prepare("SELECT name, category, length, rented FROM videos"))) {
     echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
 }
@@ -78,13 +79,18 @@ while ($stmt->fetch()) {
 }
 	echo '<tr><td>' . "<form action = 'http://web.engr.oregonstate.edu/~westonse/Assignment4-2src/videoStore.php' method = 'post'> <button type='submit' name = 'DeleteAll'>Delete All</button> </form>";
 echo '</table>';
-echo '<p><h4>Category Menu (Click buttons to filter videos by category)</h4>
-<p>
-<table border="1">';
- echo '<tr><td>' . "<form action = 'http://web.engr.oregonstate.edu/~westonse/Assignment4-2src/videoStore.php' method = 'post'> <button type='submit' name = 'filter' value = 'all'>'All Categories'</button> </form>";
+
+echo '<p><h4>Category Menu (Filter videos by category)</h4>';
+
+ echo "<form action = 'http://web.engr.oregonstate.edu/~westonse/Assignment4-2src/videoStore.php' method = 'post'>";
+ echo "<select name = 'filter'>";
+ echo  "<option value='all'>'All Categories'</option>";
 foreach($catArray as $value){
- echo '<tr><td>' . "<form action = 'http://web.engr.oregonstate.edu/~westonse/Assignment4-2src/videoStore.php' method = 'post'> <button type='submit' name = 'filter' value = '$value'>'$value'</button> </form>";
+ echo  "<option value='$value'>'$value'</option>";
 }
+echo "</select>"; 
+echo "<button type='submit'>'Filter'</button> </form>";
+
 echo '</table>';
 echo " <br> <br> <form action = 'http://web.engr.oregonstate.edu/~westonse/Assignment4-2src/videoStore.php' id = 'addMovie' method = 'post'>"; 
 echo "<input type = 'text' name = 'newName'> Name <br>";
